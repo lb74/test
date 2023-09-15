@@ -19,15 +19,9 @@ http {
         server_name localhost;
         access_log /var/log/nginx/nginx.vhost.access.log;
         error_log /var/log/nginx/nginx.vhost.error.log;
-        location ^~ /abc/ {
-            proxy_pass http://localhost:5007/;
-        }
-        location ^~ /abc1/ {
-            proxy_pass http://localhost:5009/;
-        }
     }
     server {
-        listen 5007 ssl;
+        listen 5017 ssl;
             #reverse proxy to rasa container
         location / {
             proxy_pass  http://localhost:5007;
