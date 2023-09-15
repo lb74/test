@@ -1,0 +1,43 @@
+events {
+    worker_connections  4096;  ## Default: 1024
+}
+http {
+    server {
+        listen 80;
+        return 301 https://localhost$request_uri;
+    }
+    server {
+        listen 443 ssl;
+            #reverse proxy to rasa container
+        location / {
+          proxy_pass  http://localhost;
+            }
+        ssl on;
+        ssl_certificate /etc/nginx/certificates/crt.pem;
+        ssl_certificate_key /etc/nginx/certificates/key.pem;
+
+        server_name localhost;
+        access_log /var/log/nginx/nginx.vhost.access.log;
+        error_log /var/log/nginx/nginx.vhost.error.log;
+        location ^~ /abc/ {
+            proxy_pass http://localhost:5007/;
+        }
+        location ^~ /abc1/ {
+            proxy_pass http://localhost:5009/;
+        }
+    }
+    server {
+        listen 5007 ssl;
+            #reverse proxy to rasa container
+        location / {
+            proxy_pass  http://localhost:5007;
+            }
+        ssl on;
+        ssl_certificate /etc/nginx/certificates/crt.pem;
+        ssl_certificate_key /etc/nginx/certificates/key.pem;
+
+        server_name localhost;
+        access_log /var/log/nginx/nginx.vhost.access.log;
+        error_log /var/log/nginx/nginx.vhost.error.log;
+    }
+}
